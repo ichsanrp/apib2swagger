@@ -35,6 +35,28 @@ function convert(mson) {
             break;
         case 'boolean':
         case 'string':
+        case 'integer':
+            return { type: mson.element, format:"int32" };
+        case 'float':
+            return { type: "number", format:"float" };
+        case 'double':
+            return { type: "number", format:"double" };
+        case 'long':
+            return { type: "integer", format:"int64" };
+        case 'int64':
+            return { type: "integer", format:"int64" };
+        case 'int32':
+            return { type: "integer", format:"int32" };
+        case 'uint64':
+            return { type: "integer", format:"uint64" };
+        case 'uint32':
+            return { type: "integer", format:"uint32" };
+        case 'date':
+            return { type: "string", format:"date" };
+        case 'date-time':
+            return { type: "string", format:"date-time" };
+        case 'byte':
+            return { type: "string", format:"byte" };
         case 'number':
             return { type: mson.element };
         default:
