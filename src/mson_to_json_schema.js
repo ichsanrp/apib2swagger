@@ -33,8 +33,6 @@ function convert(mson) {
             return convertEnum(mson.content);
         case 'object':
             break;
-        case 'boolean':
-        case 'string':
         case 'integer':
             return { type: mson.element, format:"int32" };
         case 'float':
@@ -59,6 +57,8 @@ function convert(mson) {
             return { type: "string", format:"byte" };
         case 'number':
             return { type: mson.element };
+        case 'boolean':
+        case 'string':
         default:
             if (!mson.content) {
                 return { '$ref': '#/definitions/' + escapeJSONPointer(mson.element) };
