@@ -58,9 +58,9 @@ function convert(mson) {
         case 'number':
             return { type: mson.element };
         case 'boolean':
-            break
+            return { type: mson.element };
         case 'string':
-            break
+            return { type: mson.element };
         default:
             if (!mson.content) {
                 return { '$ref': '#/definitions/' + escapeJSONPointer(mson.element) };
