@@ -31,6 +31,10 @@ function convert(mson) {
             }
         case 'enum':
             return convertEnum(mson.content);
+        case 'number':
+        case 'boolean':
+        case 'string':
+            return { type: mson.element };
         case 'object':
             break;
         case 'integer':
@@ -54,13 +58,7 @@ function convert(mson) {
         case 'date-time':
             return { type: "string", format:"date-time" };
         case 'byte':
-            return { type: "string", format:"byte" };
-        case 'number':
-            return { type: mson.element };
-        case 'boolean':
-            return { type: mson.element };
-        case 'string':
-            return { type: mson.element };
+            return { type: "string", format:"byte" };        
         default:
             if (!mson.content) {
                 return { '$ref': '#/definitions/' + escapeJSONPointer(mson.element) };
