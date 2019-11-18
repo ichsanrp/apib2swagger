@@ -7,14 +7,17 @@ var fs = require('fs'),
     path = require('path'),
     nopt = require('nopt'),
     yaml = require('js-yaml'),
+    changecase = require('change-case')
     apibIncludeDirective = require('apib-include-directive'),
     apib2swagger = require('../index.js');
+    swaggerToTS = require('@manifoldco/swagger-to-ts').default;
 
 var options = nopt({
     'input': String,
     'output': String,
     'convert': Boolean,
     'server': Boolean,
+    'typescript': Boolean,
     'port': Number,
     'yaml': Boolean,
     'prefer-reference': Boolean,
@@ -24,6 +27,7 @@ var options = nopt({
     'i': ['--input'],
     'o': ['--output'],
     's': ['--server'],
+    't': ['--typescript'],
     'p': ['--port'],
     'y': ['--yaml'],
     'h': ['--help']
@@ -47,6 +51,7 @@ if (options.help) {
     console.log("  -s --server Run http server with SwaggerUI.");
     console.log("  -p --port <port> Use port for the http server.");
     console.log("  -y --yaml Output YAML");
+    console.log("  -t --typescript Output Typescript");
     console.log("  --prefer-reference Refer to definitions as possible");
     console.log("  --bearer-apikey Convert Bearer headers to apiKey security schema instead of oauth2")
     process.exit();
@@ -114,6 +119,9 @@ function processBlueprint(blueprint, opts) {
             }
             return;
         }
+        if (opts.typescript) {
+            generateTypescript(swagger)            
+        }
         var data = JSON.stringify(swagger, null, 4);
         if (output !== '-') {
             fs.writeFileSync(output, data);
@@ -121,6 +129,21 @@ function processBlueprint(blueprint, opts) {
             console.log(data);
         }
     });
+}
+
+function generateTypescript(swagger){
+    var swaggerInput = swaggerToTS(swagger, {wrapper:'namespace '+changecase.camelCase(swagger.info.title)})
+    fs.writeFileSync(path.dirname(output)+"/schema.d.ts", swaggerInput);
+    // generate package json
+    var namespace = swagger.info.namespace ? swagger.info.namespace : "one-view";
+    var package = {
+        name: "@"+namespace+"/"+changecase.paramCase(swagger.info.title),
+        version: swagger.info.version,
+        description: swagger.info.description,
+        types: "./schema.d.ts"
+    }
+    
+    fs.writeFileSync(path.dirname(output)+"/package.json", JSON.stringify(package, null, 4));
 }
 
 function runServer(swagger) {
