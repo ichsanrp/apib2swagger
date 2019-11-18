@@ -78,7 +78,7 @@ var swaggerDefinitions = function (definitions, resource) {
     var scheme;
     if (resource.name) {
         scheme = searchDataStructure(resource.content); // Attributes 1
-        definitions[changecase.camelCase(resource.name)] = scheme ? scheme : {};
+        definitions[changecase.pascalCase(resource.name)] = scheme ? scheme : {};
     }
     const model = resource.model;
     if (model.content && model.name) {
@@ -87,7 +87,7 @@ var swaggerDefinitions = function (definitions, resource) {
         if (!scheme && model.content.length > 0) {
             scheme = generateSchemaFromExample(model.headers, model.content[0].content);
         }
-        definitions[changecase.camelCase(model.name) + 'Model'] = scheme ? scheme : {};
+        definitions[changecase.pascalCase(model.name) + 'Model'] = scheme ? scheme : {};
     }
 };
 
