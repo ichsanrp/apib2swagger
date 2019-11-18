@@ -132,12 +132,12 @@ function processBlueprint(blueprint, opts) {
 }
 
 function generateTypescript(swagger){
-    var swaggerInput = swaggerToTS(swagger, {wrapper:'namespace '+changecase.camelCase(swagger.info.title)})
+    var swaggerInput = swaggerToTS(swagger, {wrapper:'namespace '+changecase.pascalCase(swagger.info.title)})
     fs.writeFileSync(path.dirname(output)+"/schema.d.ts", swaggerInput);
     // generate package json
     var namespace = swagger.info.namespace ? swagger.info.namespace : "one-view";
     var package = {
-        name: "@"+namespace+"/"+changecase.paramCase(swagger.info.title),
+        name: "@"+namespace+"/"+changecase.paramCase(swagger.info.title+"-types"),
         version: swagger.info.version,
         description: swagger.info.description,
         types: "./schema.d.ts"
